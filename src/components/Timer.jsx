@@ -1,4 +1,5 @@
 import ButtonPanel from './ButtonPanel';
+import TimeSlider from './TimeSlider';
 
 function Timer() {
 	return (
@@ -55,6 +56,7 @@ function Timer() {
 					transform='rotate(-90 100 100)'
 				/>
 			</svg>
+			<TimeSlider />
 			<ButtonPanel />
 		</div>
 	);
