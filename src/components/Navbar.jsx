@@ -12,7 +12,7 @@ function Navbar() {
 			</div>
 			<div className='flex gap-2'>
 				<input
-					className='bg-zinc-700 p-2 rounded-md placeholder:text-muted-foreground'
+					className='bg-zinc-700 p-2 rounded-md placeholder:text-muted-foreground outline-none cursor-pointer'
 					placeholder='API key...'
 				/>
 				<button className='bg-primary p-2 rounded-md cursor-pointer hover:bg-green-600'>
@@ -21,11 +21,11 @@ function Navbar() {
 			</div>
 			<div className='flex gap-5'>
 				<button
-					className={`hover:text-primary transition-colors ${isActive ? 'text-primary' : ''}`}
+					className={`hover:text-primary transition-colors cursor-pointer ${isActive ? 'text-primary' : ''}`}
 				>
 					Timer
 				</button>
-				<button className='hover:text-primary transition-colors'>
+				<button className='hover:text-primary transition-colors cursor-pointer'>
 					Dashboard
 				</button>
 			</div>

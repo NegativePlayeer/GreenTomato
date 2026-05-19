@@ -1,6 +1,8 @@
+import ButtonPanel from './ButtonPanel';
+
 function Timer() {
 	return (
-		<div>
+		<div className='flex flex-col'>
 			<svg width='500' height='500' viewBox='0 0 200 200'>
 				<circle
 					cx='100'
@@ -30,6 +32,16 @@ function Timer() {
 				>
 					25:00
 				</text>
+				<text
+					x='100'
+					y='140'
+					textAnchor='middle'
+					fill='#fafafa'
+					fontSize='8'
+					fontFamily='Geist Mono, monospace'
+				>
+					Distraction count: 3
+				</text>
 				<circle
 					cx='100'
 					cy='100'
@@ -43,6 +55,7 @@ function Timer() {
 					transform='rotate(-90 100 100)'
 				/>
 			</svg>
+			<ButtonPanel />
 		</div>
 	);
 }
