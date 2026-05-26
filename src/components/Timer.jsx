@@ -1,37 +1,52 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import ButtonPanel from './ButtonPanel';
 import TimeSlider from './TimeSlider';
 
 function Timer() {
 	const intervalRef = useRef(null);
-	const [minutes, setMinutes] = useState(25);
+	const [minutes, setMinutes] = useState(1);
 	const [seconds, setSeconds] = useState(0);
 	const [isRunning, setIsRunning] = useState(false);
 
+	const CIRCUMFERENCE = 508;
+	const INITIAL_MINUTES = 1;
+
+	const totalSecondsLeft = minutes * 60 + seconds;
+	const totalSecondsInitial = INITIAL_MINUTES * 60;
+	const circleOffset =
+		CIRCUMFERENCE *
+		(totalSecondsLeft / totalSecondsInitial);
+
 	function handleStart() {
+		if (intervalRef.current) return;
+
+		intervalRef.current = setInterval(() => {
+			setSeconds((prevSeconds) => {
+				if (prevSeconds === 0) {
+					setMinutes((prevMinutes) => {
+						if (prevMinutes === 0) {
+							clearInterval(intervalRef.current);
+							intervalRef.current = null;
+							setIsRunning(false);
+							return 0;
+						}
+						return prevMinutes - 1;
+					});
+					return 59;
+				}
+
+				return prevSeconds - 1;
+			});
+		}, 1000);
+
 		setIsRunning(true);
 	}
 
 	function handlePause() {
-		setIsRunning(false);
 		clearInterval(intervalRef.current);
+		intervalRef.current = null;
+		setIsRunning(false);
 	}
-
-	useEffect(() => {
-		if (isRunning === true) {
-			intervalRef.current = setInterval(() => {
-				setSeconds((prevSeconds) => {
-					if (prevSeconds === 0) {
-						setMinutes((prevMinutes) => prevMinutes - 1);
-						return 59;
-					}
-					return prevSeconds - 1;
-				});
-			}, 1000);
-		}
-
-		return () => clearInterval(intervalRef.current);
-	}, [isRunning]);
 
 	return (
 		<div className='flex flex-col'>
@@ -62,7 +77,8 @@ function Timer() {
 					fontSize='32'
 					fontFamily='Geist Mono, monospace'
 				>
-					{minutes}:{seconds === 0 ? '00' : seconds}
+					{minutes <= 9 ? `0${minutes}` : minutes}:
+					{seconds <= 9 ? `0${seconds}` : seconds}
 				</text>
 				<text
 					x='100'
@@ -82,8 +98,8 @@ function Timer() {
 					stroke='#22c55e'
 					strokeWidth='8'
 					strokeLinecap='round'
-					strokeDasharray='502'
-					strokeDashoffset='123'
+					strokeDasharray='508'
+					strokeDashoffset={circleOffset}
 					transform='rotate(-90 100 100)'
 				/>
 			</svg>
