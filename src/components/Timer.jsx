@@ -4,15 +4,15 @@ import TimeSlider from './TimeSlider';
 
 function Timer() {
 	const intervalRef = useRef(null);
-	const [minutes, setMinutes] = useState(25);
+	const [initialMinutes, setInitialMinutes] = useState(25);
+	const [minutes, setMinutes] = useState(initialMinutes);
 	const [seconds, setSeconds] = useState(0);
 	const [isRunning, setIsRunning] = useState(false);
 
 	const CIRCUMFERENCE = 508;
-	const INITIAL_MINUTES = 25;
 
 	const totalSecondsLeft = minutes * 60 + seconds;
-	const totalSecondsInitial = INITIAL_MINUTES * 60;
+	const totalSecondsInitial = initialMinutes * 60;
 	const circleOffset =
 		CIRCUMFERENCE *
 		(totalSecondsLeft / totalSecondsInitial);
@@ -52,8 +52,15 @@ function Timer() {
 		setIsRunning(false);
 		clearInterval(intervalRef.current);
 		intervalRef.current = null;
-		setMinutes(25);
+		setMinutes(initialMinutes);
 		setSeconds(0);
+	}
+
+	function handleSliderChange(value) {
+		if (isRunning) return;
+		if (initialMinutes !== minutes) return;
+		setInitialMinutes(value);
+		setMinutes(value);
 	}
 
 	return (
@@ -75,7 +82,7 @@ function Timer() {
 					fontFamily='Geist Mono, monospace'
 					textAnchor='middle'
 				>
-					Work
+					{isRunning ? 'Work!' : 'Paused!'}
 				</text>
 				<text
 					x='100'
@@ -107,11 +114,18 @@ function Timer() {
 					strokeWidth='8'
 					strokeLinecap='round'
 					strokeDasharray='508'
-					strokeDashoffset={circleOffset}
+					strokeDashoffset={
+						isRunning && intervalRef != null
+							? circleOffset
+							: 508
+					}
 					transform='rotate(-90 100 100)'
 				/>
 			</svg>
-			<TimeSlider />
+			<TimeSlider
+				minutes={initialMinutes}
+				onChange={handleSliderChange}
+			/>
 			<ButtonPanel
 				onStart={handleStart}
 				onPause={handlePause}
