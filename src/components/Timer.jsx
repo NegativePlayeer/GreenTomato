@@ -4,12 +4,12 @@ import TimeSlider from './TimeSlider';
 
 function Timer() {
 	const intervalRef = useRef(null);
-	const [minutes, setMinutes] = useState(1);
+	const [minutes, setMinutes] = useState(25);
 	const [seconds, setSeconds] = useState(0);
 	const [isRunning, setIsRunning] = useState(false);
 
 	const CIRCUMFERENCE = 508;
-	const INITIAL_MINUTES = 1;
+	const INITIAL_MINUTES = 25;
 
 	const totalSecondsLeft = minutes * 60 + seconds;
 	const totalSecondsInitial = INITIAL_MINUTES * 60;
@@ -46,6 +46,14 @@ function Timer() {
 		clearInterval(intervalRef.current);
 		intervalRef.current = null;
 		setIsRunning(false);
+	}
+
+	function handleRestart() {
+		setIsRunning(false);
+		clearInterval(intervalRef.current);
+		intervalRef.current = null;
+		setMinutes(25);
+		setSeconds(0);
 	}
 
 	return (
@@ -108,6 +116,7 @@ function Timer() {
 				onStart={handleStart}
 				onPause={handlePause}
 				isRunning={isRunning}
+				onRestart={handleRestart}
 			/>
 		</div>
 	);
