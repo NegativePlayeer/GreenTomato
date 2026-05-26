@@ -1,7 +1,38 @@
+import { useEffect, useRef, useState } from 'react';
 import ButtonPanel from './ButtonPanel';
 import TimeSlider from './TimeSlider';
 
 function Timer() {
+	const intervalRef = useRef(null);
+	const [minutes, setMinutes] = useState(25);
+	const [seconds, setSeconds] = useState(0);
+	const [isRunning, setIsRunning] = useState(false);
+
+	function handleStart() {
+		setIsRunning(true);
+	}
+
+	function handlePause() {
+		setIsRunning(false);
+		clearInterval(intervalRef.current);
+	}
+
+	useEffect(() => {
+		if (isRunning === true) {
+			intervalRef.current = setInterval(() => {
+				setSeconds((prevSeconds) => {
+					if (prevSeconds === 0) {
+						setMinutes((prevMinutes) => prevMinutes - 1);
+						return 59;
+					}
+					return prevSeconds - 1;
+				});
+			}, 1000);
+		}
+
+		return () => clearInterval(intervalRef.current);
+	}, [isRunning]);
+
 	return (
 		<div className='flex flex-col'>
 			<svg width='500' height='500' viewBox='0 0 200 200'>
@@ -31,7 +62,7 @@ function Timer() {
 					fontSize='32'
 					fontFamily='Geist Mono, monospace'
 				>
-					25:00
+					{minutes}:{seconds === 0 ? '00' : seconds}
 				</text>
 				<text
 					x='100'
@@ -57,7 +88,11 @@ function Timer() {
 				/>
 			</svg>
 			<TimeSlider />
-			<ButtonPanel />
+			<ButtonPanel
+				onStart={handleStart}
+				onPause={handlePause}
+				isRunning={isRunning}
+			/>
 		</div>
 	);
 }
