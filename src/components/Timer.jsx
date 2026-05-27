@@ -4,10 +4,15 @@ import TimeSlider from './TimeSlider';
 
 function Timer() {
 	const intervalRef = useRef(null);
+	const modeRef = useRef('work');
+	const initialMinutesRef = useRef(25);
+
 	const [initialMinutes, setInitialMinutes] = useState(25);
 	const [minutes, setMinutes] = useState(initialMinutes);
 	const [seconds, setSeconds] = useState(0);
 	const [isRunning, setIsRunning] = useState(false);
+	const [mode, setMode] = useState('work');
+	const [sessionNumber, setSessionNumber] = useState(1);
 
 	const CIRCUMFERENCE = 508;
 
@@ -28,6 +33,7 @@ function Timer() {
 							clearInterval(intervalRef.current);
 							intervalRef.current = null;
 							setIsRunning(false);
+							handleFinish();
 							return 0;
 						}
 						return prevMinutes - 1;
@@ -54,13 +60,35 @@ function Timer() {
 		intervalRef.current = null;
 		setMinutes(initialMinutes);
 		setSeconds(0);
+		setSessionNumber(1);
 	}
 
 	function handleSliderChange(value) {
 		if (isRunning) return;
 		if (initialMinutes !== minutes) return;
+		initialMinutesRef.current = value;
 		setInitialMinutes(value);
 		setMinutes(value);
+	}
+
+	function handleFinish() {
+		if (modeRef.current === 'work') {
+			const breakMinutes = Math.floor(
+				initialMinutesRef.current / 5,
+			);
+
+			setSessionNumber((prevSession) => prevSession + 1);
+			modeRef.current = 'break';
+			setMode('break');
+			setInitialMinutes(breakMinutes);
+			setMinutes(breakMinutes);
+		} else {
+			modeRef.current = 'work';
+			setMode('work');
+			setInitialMinutes(initialMinutesRef.current);
+			setMinutes(initialMinutesRef.current);
+		}
+		setSeconds(0);
 	}
 
 	return (
@@ -82,7 +110,11 @@ function Timer() {
 					fontFamily='Geist Mono, monospace'
 					textAnchor='middle'
 				>
-					{isRunning ? 'Work!' : 'Paused!'}
+					{isRunning
+						? mode
+						: initialMinutes !== minutes
+							? 'Pause!'
+							: `Time for ${mode}!`}
 				</text>
 				<text
 					x='100'
@@ -103,7 +135,7 @@ function Timer() {
 					fontSize='8'
 					fontFamily='Geist Mono, monospace'
 				>
-					Distraction count: 3
+					Session: {sessionNumber}
 				</text>
 				<circle
 					cx='100'
@@ -114,11 +146,7 @@ function Timer() {
 					strokeWidth='8'
 					strokeLinecap='round'
 					strokeDasharray='508'
-					strokeDashoffset={
-						isRunning && intervalRef != null
-							? circleOffset
-							: 508
-					}
+					strokeDashoffset={circleOffset}
 					transform='rotate(-90 100 100)'
 				/>
 			</svg>
