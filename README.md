@@ -2,7 +2,7 @@
 
 A minimalist Pomodoro timer built with React. Helps you stay focused with automatic work/break cycles and animated progress tracking.
 
-![Green Tomato Timer](screenshot.png)
+![Green Tomato Timer](GreenTomato.png)
 
 ## Features
 

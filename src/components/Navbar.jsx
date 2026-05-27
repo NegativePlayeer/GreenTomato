@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 function Navbar() {
 	return (
 		<div className='bg-card w-full text-card-foreground flex justify-between items-center p-5 border-b border-border'>
